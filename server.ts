@@ -216,56 +216,91 @@ app.get('/widget.js', (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
   const protocol = req.headers['x-forwarded-proto'] || req.protocol;
   const host = req.headers['x-forwarded-host'] || req.get('host');
-  const appUrl = process.env.APP_URL || `${protocol}://${host}`;
+  const fallbackAppUrl = process.env.APP_URL || `${protocol}://${host}`;
 
   const script = `
 (function() {
   if (window.__DEMXANH_AI_LOADED__) return;
   window.__DEMXANH_AI_LOADED__ = true;
 
-  var appUrl = "${appUrl}";
-  var isOpen = false;
+  console.log('[DemXanh AI Widget] Đang khởi tạo trợ lý Đệm Xanh...');
 
-  var container = document.createElement('div');
-  container.id = 'demxanh-ai-widget-root';
-  container.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:2147483647;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;display:flex;flex-direction:column;align-items:flex-end;';
-
-  var iframe = document.createElement('iframe');
-  iframe.src = appUrl + '?mode=widget';
-  iframe.style.cssText = 'width:420px;height:620px;max-height:85vh;max-width:92vw;border:none;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,136,72,0.25);display:none;margin-bottom:12px;background:#ffffff;';
-  iframe.allow = 'clipboard-write';
-
-  var bubble = document.createElement('div');
-  bubble.style.cssText = 'display:flex;align-items:center;gap:10px;background:#008848;color:#ffffff;padding:12px 18px;border-radius:50px;box-shadow:0 8px 24px rgba(0,136,72,0.38);cursor:pointer;user-select:none;transition:transform 0.2s, background-color 0.2s;';
-  bubble.innerHTML = '<div style="position:relative;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#fbbf24;border-radius:50%;border:2px solid #008848;"></span></div><div style="line-height:1.2;text-align:left;"><div style="font-size:13px;font-weight:700;">Tư vấn Đệm AI</div><div style="font-size:11px;opacity:0.85;">demxanh.com • 24/7</div></div>';
-
-  bubble.onmouseenter = function() { bubble.style.transform = 'scale(1.04)'; };
-  bubble.onmouseleave = function() { bubble.style.transform = 'scale(1)'; };
-
-  function toggle() {
-    isOpen = !isOpen;
-    if (isOpen) {
-      iframe.style.display = 'block';
-      bubble.style.backgroundColor = '#1e293b';
-      bubble.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg><span style="font-size:13px;font-weight:700;">Đóng chat</span>';
-    } else {
-      iframe.style.display = 'none';
-      bubble.style.backgroundColor = '#008848';
-      bubble.innerHTML = '<div style="position:relative;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#fbbf24;border-radius:50%;border:2px solid #008848;"></span></div><div style="line-height:1.2;text-align:left;"><div style="font-size:13px;font-weight:700;">Tư vấn Đệm AI</div><div style="font-size:11px;opacity:0.85;">demxanh.com • 24/7</div></div>';
+  // Auto-detect app origin from the loaded script tag
+  var currentScript = document.currentScript || (function() {
+    var scripts = document.getElementsByTagName('script');
+    for (var i = scripts.length - 1; i >= 0; i--) {
+      if (scripts[i].src && scripts[i].src.indexOf('/widget.js') !== -1) return scripts[i];
     }
+    return null;
+  })();
+
+  var appUrl = "${fallbackAppUrl}";
+  if (currentScript && currentScript.src) {
+    try {
+      appUrl = new URL(currentScript.src).origin;
+    } catch(e) {}
   }
 
-  bubble.onclick = toggle;
-
-  window.addEventListener('message', function(e) {
-    if (e.data === 'demxanh-close-widget') {
-      if (isOpen) toggle();
+  function init() {
+    if (!document.body) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        setTimeout(init, 50);
+      }
+      return;
     }
-  });
 
-  container.appendChild(iframe);
-  container.appendChild(bubble);
-  document.body.appendChild(container);
+    var isOpen = false;
+
+    var container = document.createElement('div');
+    container.id = 'demxanh-ai-widget-root';
+    container.style.cssText = 'position:fixed !important;bottom:24px !important;right:24px !important;z-index:2147483647 !important;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif !important;display:flex !important;flex-direction:column !important;align-items:flex-end !important;pointer-events:auto !important;';
+
+    var iframe = document.createElement('iframe');
+    iframe.src = appUrl + '?mode=widget';
+    iframe.style.cssText = 'width:420px !important;height:640px !important;max-height:85vh !important;max-width:92vw !important;border:none !important;border-radius:24px !important;box-shadow:0 20px 60px rgba(0,0,0,0.28), 0 0 0 1px rgba(0,136,72,0.25) !important;display:none;margin-bottom:12px !important;background:#ffffff !important;overflow:hidden !important;';
+    iframe.allow = 'clipboard-write';
+
+    var bubble = document.createElement('div');
+    bubble.style.cssText = 'display:flex !important;align-items:center !important;gap:10px !important;background:#008848 !important;color:#ffffff !important;padding:12px 18px !important;border-radius:50px !important;box-shadow:0 8px 24px rgba(0,136,72,0.38) !important;cursor:pointer !important;user-select:none !important;transition:transform 0.2s, background-color 0.2s !important;line-height:normal !important;box-sizing:border-box !important;';
+    bubble.innerHTML = '<div style="position:relative;display:flex;align-items:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#fbbf24;border-radius:50%;border:2px solid #008848;"></span></div><div style="line-height:1.2;text-align:left;color:#ffffff;"><div style="font-size:13px;font-weight:700;color:#ffffff;">Tư vấn Đệm AI</div><div style="font-size:11px;opacity:0.88;color:#ffffff;">demxanh.com • 24/7</div></div>';
+
+    bubble.onmouseenter = function() { bubble.style.transform = 'scale(1.04)'; };
+    bubble.onmouseleave = function() { bubble.style.transform = 'scale(1)'; };
+
+    function toggle() {
+      isOpen = !isOpen;
+      if (isOpen) {
+        iframe.style.display = 'block';
+        bubble.style.backgroundColor = '#1e293b';
+        bubble.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg><span style="font-size:13px;font-weight:700;color:#ffffff;margin-left:6px;">Đóng chat</span>';
+      } else {
+        iframe.style.display = 'none';
+        bubble.style.backgroundColor = '#008848';
+        bubble.innerHTML = '<div style="position:relative;display:flex;align-items:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#fbbf24;border-radius:50%;border:2px solid #008848;"></span></div><div style="line-height:1.2;text-align:left;color:#ffffff;"><div style="font-size:13px;font-weight:700;color:#ffffff;">Tư vấn Đệm AI</div><div style="font-size:11px;opacity:0.88;color:#ffffff;">demxanh.com • 24/7</div></div>';
+      }
+    }
+
+    bubble.onclick = toggle;
+
+    window.addEventListener('message', function(e) {
+      if (e.data === 'demxanh-close-widget') {
+        if (isOpen) toggle();
+      }
+    });
+
+    container.appendChild(iframe);
+    container.appendChild(bubble);
+    document.body.appendChild(container);
+    console.log('[DemXanh AI Widget] Khởi tạo bong bóng chat thành công!');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 `;
   res.send(script);
