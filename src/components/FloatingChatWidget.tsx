@@ -19,6 +19,7 @@ import {
 import { ProductItem, DEMXANH_PRODUCTS } from '../data/products';
 import { ProductCard } from './ProductCard';
 import { AISettingsConfig } from '../../server';
+import { generateClientConsultation } from '../utils/aiConsultant';
 
 export interface ChatMessage {
   id: string;
@@ -152,12 +153,13 @@ export const FloatingChatWidget: React.FC<FloatingChatWidgetProps> = ({
         throw new Error(data.error || 'Lỗi server');
       }
     } catch {
+      const smartResult = generateClientConsultation(text, DEMXANH_PRODUCTS);
       const fallbackMsg: ChatMessage = {
         id: `ai-fb-${Date.now()}`,
         role: 'assistant',
-        content: `Dạ Đệm Xanh đã nhận được yêu cầu! Để chọn chuẩn kích thước và nhận ngay **Voucher giảm thêm 200k**, Anh/Chị có thể bấm nút **"Nhận Voucher"** bên dưới hoặc gọi hotline miễn cước **${settings.hotline}** (Zalo: ${settings.zalo}) để chuyên viên hỗ trợ ngay ạ!`,
+        content: smartResult.reply,
         timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-        recommendedProducts: [DEMXANH_PRODUCTS[0], DEMXANH_PRODUCTS[1]],
+        recommendedProducts: smartResult.recommendedProducts,
       };
       setMessages((prev) => [...prev, fallbackMsg]);
     } finally {

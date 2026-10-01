@@ -192,6 +192,93 @@ function generateSmartFallback(userMessage: string, settings: AISettingsConfig):
     };
   }
 
+  if (msg.includes('sông hồng') || msg.includes('song hong')) {
+    const sh = currentProducts.find(p => p.name.toLowerCase().includes('sông hồng')) || bongEp;
+    return {
+      reply: `Dạ Đệm bông ép Sông Hồng là dòng đệm quốc dân bán chạy số 1 tại Đệm Xanh nhờ lõi bông tinh khiết kháng khuẩn không hóa chất, độ phẳng cao giữ cột sống thẳng tự nhiên.\n\nMẫu **${sh?.name}** đang giảm ${sh?.discountPercent}% chỉ từ ${sh?.salePrice?.toLocaleString('vi-VN')}đ (Bảo hành 5 năm chính hãng). Anh/Chị muốn dùng đệm độ dày 7cm, 9cm hay 15cm ạ?`,
+      productIds: [sh?.id].filter(Boolean) as string[]
+    };
+  }
+
+  if (msg.includes('dunlopillo')) {
+    const dunlop = currentProducts.find(p => p.brand.toLowerCase().includes('dunlopillo')) || loXo;
+    return {
+      reply: `Dạ thương hiệu Dunlopillo chuẩn Hoàng gia Anh là dòng đệm cao cấp số 1 tại Đệm Xanh với hệ thống lò xo túi độc lập cách ly rung động và cao su kháng khuẩn Talasilver 99.9%.\n\nHiện mẫu **${dunlop?.name}** đang giảm tới ${dunlop?.discountPercent}% chỉ còn ${dunlop?.salePrice?.toLocaleString('vi-VN')}đ, tặng kèm bộ ga gối lụa cao cấp và bảo hành 10 năm tận nhà ạ!`,
+      productIds: [dunlop?.id].filter(Boolean) as string[]
+    };
+  }
+
+  if (msg.includes('kim cương') || msg.includes('kim cuong') || msg.includes('cao su')) {
+    const kc = currentProducts.find(p => p.brand.toLowerCase().includes('kim cương')) || caoSu;
+    return {
+      reply: `Dạ đệm cao su thiên nhiên Kim Cương (như Happy Gold) làm từ 100% mủ cao su nguyên chất, cấu trúc hơn 5000 lỗ thoáng khí nâng đỡ trọn vẹn từng đường cong cơ thể, độ bền 15-20 năm.\n\nĐệm Xanh đang ưu đãi giảm 25% mẫu **${kc?.name}** chỉ từ ${kc?.salePrice?.toLocaleString('vi-VN')}đ, tặng kèm 2 gối cao su thiên nhiên và bảo hành 12 năm ạ!`,
+      productIds: [kc?.id].filter(Boolean) as string[]
+    };
+  }
+
+  if (msg.includes('cứng') || msg.includes('mềm') || msg.includes('độ cứng')) {
+    return {
+      reply: `Dạ về độ cứng - mềm khi chọn đệm, Đệm Xanh xin chia sẻ kinh nghiệm chuẩn y khoa:\n\n` +
+        `🔹 **Thích nằm vững chắc, phẳng lưng:** Chọn **Đệm Bông Ép Sông Hồng**. Bề mặt phẳng lì tuyệt đối, ngừa đau mỏi lưng rất tốt cho người lớn tuổi hoặc người quen nằm chiếu/phản.\n` +
+        `🔹 **Thích êm ái vừa phải, đàn hồi ôm sát cơ thể:** Chọn **Đệm Cao Su Thiên Nhiên Kim Cương** hoặc **Đệm Foam**, ôm trọn hõm lưng không bị võng.\n` +
+        `🔹 **Thích êm mềm bồng bềnh chuẩn khách sạn 5 sao:** Chọn **Đệm Lò Xo Túi Dunlopillo CoolSilk**.\n\n` +
+        `Anh/Chị trước giờ quen nằm đệm phẳng cứng hay thích êm ái bồng bềnh hơn ạ?`,
+      productIds: [bongEp?.id, caoSu?.id, loXo?.id].filter(Boolean) as string[]
+    };
+  }
+
+  if (msg.includes('nóng') || msg.includes('mát') || msg.includes('mùa hè') || msg.includes('bí lưng') || msg.includes('chiếu')) {
+    return {
+      reply: `Dạ các dòng đệm mùa hè tại Đệm Xanh luôn có cơ chế thoát nhiệt tối ưu:\n\n` +
+        `❄️ **Đệm Bông Ép Sông Hồng:** Lõi bông tinh khiết thoáng khí tự nhiên, vải gấm/cotton thấm hút mồ hôi, trải chiếu điều hòa lên rất tiện.\n` +
+        `❄️ **Đệm Cao Su Thiên Nhiên:** Cấu trúc hàng ngàn lỗ tổ ong thông khí 2 mặt, không gây tích nhiệt cơ thể.\n` +
+        `❄️ **Chiếu Điều Hòa Misuko:** Đang giảm 40-50% tại Đệm Xanh, giúp hạ nhiệt độ bề mặt đệm từ 2-3°C ngay khi nằm!\n\n` +
+        `Anh/Chị cần tìm đệm mát lưng hay tìm chiếu điều hòa trải lên đệm cũ ạ?`,
+      productIds: [bongEp?.id, caoSu?.id].filter(Boolean) as string[]
+    };
+  }
+
+  if (msg.includes('1m6') || msg.includes('1m8') || msg.includes('1m2') || msg.includes('2m') || msg.includes('kích thước') || msg.includes('m6') || msg.includes('m8')) {
+    return {
+      reply: `Dạ Đệm Xanh có sẵn tất cả các kích thước chuẩn từ 1m2 đến 2m2:\n- **1m6 x 2m**: Kích thước tiêu chuẩn phổ biến nhất cho gia đình.\n- **1m8 x 2m**: Rộng rãi, thoải mái nhất cho 2 vợ chồng và bé nhỏ.\n- **2m x 2m2**: Cỡ đại King size sang trọng.\n- **1m2 x 2m**: Kích thước đơn cho bé hoặc giường đơn.\n\nGiường của Anh/Chị kích thước lọt lòng bao nhiêu và cần độ dày mấy phân (7cm, 9cm hay 15cm) để em báo giá tốt nhất kèm quà tặng ạ?`,
+      productIds: [bongEp?.id, loXo?.id, caoSu?.id].filter(Boolean) as string[]
+    };
+  }
+
+  if (msg.includes('giá') || msg.includes('bao nhiêu') || msg.includes('bảng giá') || msg.includes('tiền')) {
+    return {
+      reply: `Dạ tại Đệm Xanh đang có các phân khúc giá tốt nhất thị trường kèm ưu đãi giảm tới 35%:\n` +
+        `- **Dưới 3 triệu**: Đệm bông ép sinh viên/gia đình (Olympia, Queensweet, Sông Hồng gấp 3) phẳng lưng bền bỉ.\n` +
+        `- **Từ 3 - 7 triệu**: Đệm bông ép cao cấp Sông Hồng vỏ gấm, đệm Foam đa tầng êm ái.\n` +
+        `- **Từ 7 - 15 triệu**: Đệm cao su thiên nhiên Kim Cương, Liên Á và Đệm lò xo túi Dunlopillo CoolSilk 5 sao.\n\n` +
+        `Anh/Chị muốn đầu tư trong khoảng ngân sách bao nhiêu để em lọc ra 2 mẫu tối ưu nhất ạ?`,
+      productIds: [bongEp?.id, caoSu?.id, loXo?.id].filter(Boolean) as string[]
+    };
+  }
+
+  if (msg.includes('showroom') || msg.includes('địa chỉ') || msg.includes('cửa hàng') || msg.includes('ở đâu')) {
+    return {
+      reply: `Dạ Hệ thống Đệm Xanh hiện có chuỗi showroom lớn tại các tỉnh thành:\n` +
+        `📍 **Hà Nội:** Cầu Giấy (102 Cầu Giấy), Đống Đa (807 Giải Phóng), Thanh Xuân, Hai Bà Trưng, Long Biên.\n` +
+        `📍 **TP. Hồ Chí Minh:** Quận 10 (454 Nguyễn Chí Thanh), Tân Bình, Gò Vấp.\n` +
+        `📍 **Thái Bình & Ninh Bình** đều có showroom chính hãng.\n\n` +
+        `Tất cả showroom đều có sẵn giường nằm thử miễn phí. Anh/Chị đang ở khu vực quận/huyện nào để em gửi địa chỉ showroom gần nhất kèm chỉ đường ạ?`,
+      productIds: currentProducts.slice(0, 2).map(p => p.id)
+    };
+  }
+
+  if (msg.includes('bảo hành') || msg.includes('đổi trả') || msg.includes('vận chuyển') || msg.includes('ship')) {
+    return {
+      reply: `Dạ chính sách mua hàng tại Đệm Xanh cực kỳ an tâm cho khách hàng:\n` +
+        `1. **Cam kết 100% chính hãng**: Đền gấp 2 lần nếu phát hiện hàng giả, hàng nhái.\n` +
+        `2. **Bảo hành dài hạn**: 5 - 12 năm tận nhà tùy dòng sản phẩm.\n` +
+        `3. **Nằm thử 30 ngày**: Đổi mẫu miễn phí nếu nằm không quen hoặc không hợp lưng.\n` +
+        `4. **Miễn phí vận chuyển**: Giao nhanh trong 2h tại Hà Nội & TP.HCM, hỗ trợ bưng bê lên tận phòng ngủ.\n\n` +
+        `Anh/Chị cần giao về địa chỉ nào ạ?`,
+      productIds: currentProducts.slice(0, 2).map(p => p.id)
+    };
+  }
+
   return {
     reply: `Dạ em chào Anh/Chị! Em là ${settings.botName} của Hệ thống Đệm Xanh (demxanh.com).\n\nĐệm Xanh hiện có đủ các dòng đệm chính hãng chiết khấu tới 35%:\n- **Đệm bông ép**: Sông Hồng, Hanvico (Phẳng lưng, ngừa đau mỏi)\n- **Đệm cao su thiên nhiên**: Kim Cương, Dunlopillo (Bền 15-20 năm, êm ái thoáng khí)\n- **Đệm lò xo túi**: Dunlopillo CoolSilk (Chuẩn khách sạn 5 sao, không rung lắc)\n- **Chăn đông, ga gối & Topper** làm mềm đệm cũ\n\nAnh/Chị đang tìm đệm kích thước bao nhiêu (1m6 hay 1m8) và mức ngân sách dự kiến ra sao để em gợi ý mẫu phù hợp nhất ạ?`,
     productIds: currentProducts.slice(0, 3).map(p => p.id)

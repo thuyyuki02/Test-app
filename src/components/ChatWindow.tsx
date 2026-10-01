@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { ProductItem, DEMXANH_PRODUCTS } from '../data/products';
 import { ProductCard } from './ProductCard';
+import { generateClientConsultation } from '../utils/aiConsultant';
 
 export interface ChatMessage {
   id: string;
@@ -185,13 +186,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         throw new Error(data.error || 'Lỗi server');
       }
     } catch {
-      // Fallback assistant response
+      // Smart Fallback assistant response (for static hosting or offline)
+      const smartResult = generateClientConsultation(text, DEMXANH_PRODUCTS);
       const fallbackMsg: ChatMessage = {
         id: `ai-fb-${Date.now()}`,
         role: 'assistant',
-        content: `Dạ Đệm Xanh xin ghi nhận câu hỏi của Anh/Chị! Để được tư vấn chi tiết nhất theo đúng kích thước giường và tình trạng sức khỏe, Anh/Chị có thể gọi ngay tổng đài miễn cước **1800 1051** hoặc Zalo **0962 701 701**. Chuyên viên Đệm Xanh đang trực 24/7 để hỗ trợ Anh/Chị nhận thêm voucher giảm 200k ạ!`,
+        content: smartResult.reply,
         timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-        recommendedProducts: [DEMXANH_PRODUCTS[0], DEMXANH_PRODUCTS[1]],
+        recommendedProducts: smartResult.recommendedProducts,
       };
       setMessages((prev) => [...prev, fallbackMsg]);
     } finally {
