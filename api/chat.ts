@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { DEMXANH_PRODUCTS } from '../src/data/products.js';
+import { generateClientConsultation } from '../src/utils/aiConsultant.js';
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY || '',
@@ -112,30 +113,13 @@ QUY TẮC ĐẶC BIỆT:
       }
     }
 
-    // Smart fallback if GEMINI_API_KEY is not yet configured in Vercel
-    const msg = userPrompt.toLowerCase();
-    const bongEp = DEMXANH_PRODUCTS.find((p) => p.category === 'bong-ep') || DEMXANH_PRODUCTS[0];
-    const caoSu = DEMXANH_PRODUCTS.find((p) => p.category === 'cao-su') || DEMXANH_PRODUCTS[1];
-    const loXo = DEMXANH_PRODUCTS.find((p) => p.category === 'lo-xo') || DEMXANH_PRODUCTS[2];
-
-    let reply = '';
-    let recs = [bongEp, caoSu];
-
-    if (msg.includes('đau lưng') || msg.includes('thoát vị') || msg.includes('cột sống') || msg.includes('người già')) {
-      reply = `Dạ em chào Anh/Chị! Với tình trạng đau lưng hoặc thoái hóa cột sống, nguyên tắc số 1 là bề mặt đệm phải nâng đỡ vững chắc, giữ cột sống ở đường cong sinh lý tự nhiên, tuyệt đối không nằm đệm quá lún gây cong võng thắt lưng.\n\nĐệm Xanh khuyên Anh/Chị nên lựa chọn 2 dòng sản phẩm đạt chuẩn y khoa sau:\n1. **${bongEp.name}**: Công nghệ ép nhiệt tinh khiết bề mặt phẳng hoàn hảo, không lún xẹp, giá ưu đãi từ ${bongEp.salePrice.toLocaleString('vi-VN')}đ.\n2. **${caoSu.name}**: Cao su 100% thiên nhiên đàn hồi nâng đỡ đa vùng, giải phóng hoàn toàn áp lực đĩa đệm.\n\nAnh/Chị đang cần đệm cho giường kích thước nào (1m6x2m hay 1m8x2m) để em báo giá chính xác và giữ ưu đãi quà tặng gối cao su cho mình ạ?`;
-      recs = [bongEp, caoSu];
-    } else if (msg.includes('cưới') || msg.includes('vợ chồng') || msg.includes('phòng ngủ') || msg.includes('tân hôn')) {
-      reply = `Dạ Đệm Xanh chúc mừng ngày trọng đại của Anh/Chị! Đệm phòng tân hôn cần tiêu chí: Sang trọng, êm ái thư giãn và đặc biệt là hệ thống lò xo túi độc lập không rung lắc khi trở mình.\n\nĐệm Xanh gợi ý 2 mẫu bán chạy nhất cho phòng cưới:\n1. **${loXo.name}**: Chuẩn khách sạn 5 sao, lớp cao su êm ái bề mặt cùng lò xo túi chống ồn tuyệt đối.\n2. **${caoSu.name}**: Bền bỉ 15-20 năm, thoáng khí 4 mùa.\n\nĐặc biệt đơn phòng cưới đang được tặng Voucher giảm thêm 200k + Bộ quà cưới gồm 2 gối tự nhiên và ga chống thấm cao cấp ạ!`;
-      recs = [loXo, caoSu];
-    } else {
-      reply = `Dạ em chào Anh/Chị! Em là Chuyên gia Tư vấn của Hệ thống Đệm Xanh (demxanh.com).\n\nĐệm Xanh hiện có sẵn hơn 500+ mẫu đệm chính hãng chiết khấu tới 35%:\n- **Đệm bông ép**: Sông Hồng, Hanvico (Chống cong võng cột sống, giá từ 1.8 triệu)\n- **Đệm cao su thiên nhiên**: Kim Cương, Liên Á, Dunlopillo (Bền 15-20 năm, thoáng khí tối đa)\n- **Đệm lò xo túi cao cấp**: Dunlopillo CoolSilk (Êm ái chuẩn khách sạn 5 sao)\n- **Topper làm mềm & Chăn ga gối** các loại\n\nChính sách Đệm Xanh: Miễn phí giao tận phòng + Nằm thử 30 ngày tại nhà. Anh/Chị đang tìm đệm kích thước nào (1m6 hay 1m8) và dự kiến ngân sách ra sao để em gợi ý mẫu tốt nhất ạ?`;
-      recs = DEMXANH_PRODUCTS.slice(0, 2);
-    }
+    // Smart comprehensive consultation fallback
+    const smartResult = generateClientConsultation(userPrompt, DEMXANH_PRODUCTS);
 
     return res.status(200).json({
       success: true,
-      reply,
-      recommendedProducts: recs,
+      reply: smartResult.reply,
+      recommendedProducts: smartResult.recommendedProducts,
       timestamp: new Date().toISOString(),
     });
   } catch (err: any) {

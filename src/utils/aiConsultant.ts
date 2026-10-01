@@ -57,6 +57,54 @@ export function generateClientConsultation(
   const caoSu = currentProducts.find((p) => p.category === 'cao-su') || currentProducts[1] || currentProducts[0];
   const loXo = currentProducts.find((p) => p.category === 'lo-xo') || currentProducts[2] || currentProducts[0];
 
+  // Detailed definitions & concept questions
+  if (msg.includes('bông ép là gì') || msg.includes('dem bong ep la gi') || (msg.includes('bông ép') && (msg.includes('là gì') || msg.includes('như thế nào') || msg.includes('ưu điểm')))) {
+    return {
+      reply: `Dạ Đệm Xanh xin giải đáp chi tiết về **Đệm Bông Ép** cho Anh/Chị ạ:\n\n` +
+        `📌 **1. Đệm bông ép là gì?**\n` +
+        `Đệm bông ép là dòng đệm được cấu tạo từ các sợi bông polyester (sợi xơ bông tinh khiết). Các sợi này được xếp lớp và dùng **công nghệ ép cách nhiệt công nghệ cao** để tạo thành khối đệm vững chắc mà **hoàn toàn không sử dụng keo dính hay hóa chất độc hại**.\n\n` +
+        `⭐ **2. Ưu điểm nổi bật:**\n` +
+        `- **Độ phẳng cao, không lún xẹp:** Bề mặt phẳng lì giữ cột sống luôn ở trạng thái thẳng tự nhiên khi ngủ, không bị võng lưng như đệm mút mềm.\n` +
+        `- **Thiết kế gập 2, gập 3:** Trọng lượng vừa phải, dễ dàng gấp gọn để làm ghế sofa hoặc cất giữ, vệ sinh nhà cửa.\n` +
+        `- **Thoáng khí, thấm hút mồ hôi:** Lõi bông xơ thoáng khí, nằm mùa hè rất mát, có thể trải chiếu trúc/chiếu điều hòa lên trên.\n` +
+        `- **Giá thành hợp lý:** Dao động từ 1.800.000đ - 4.500.000đ, độ bền từ 7 - 10 năm.\n\n` +
+        `👨‍⚕️ **3. Ai nên sử dụng?**\n` +
+        `Rất phù hợp cho người hay bị **đau lưng, thoái hóa cột sống, người cao tuổi**, trẻ em đang phát triển khung xương và người quen nằm mặt phẳng cứng.\n\n` +
+        `🏆 **Mẫu bán chạy nhất tại Đệm Xanh:** **${bongEp.name}** (bảo hành 5 năm chính hãng, đang giảm ${bongEp.discountPercent}% còn ${bongEp.salePrice.toLocaleString('vi-VN')}đ).\n\n` +
+        `Anh/Chị muốn tìm đệm bông ép cho người lớn tuổi hay gia đình sử dụng, và cần giường kích thước bao nhiêu ạ?`,
+      recommendedProducts: [bongEp],
+    };
+  }
+
+  if (msg.includes('cao su là gì') || (msg.includes('cao su') && msg.includes('là gì'))) {
+    return {
+      reply: `Dạ Đệm Xanh xin giải đáp về **Đệm Cao Su** ạ:\n\n` +
+        `📌 **1. Đệm cao su là gì?**\n` +
+        `Đệm cao su phổ biến nhất là **Cao su thiên nhiên** (được sản xuất từ 100% mủ cây cao su nguyên chất, lưu hóa thành khối đệm có độ dẻo dai đàn hồi cực cao) và **Cao su tổng hợp/nhân tạo**.\n\n` +
+        `⭐ **2. Ưu điểm vượt trội:**\n` +
+        `- **Nâng đỡ đa vùng hoàn hảo:** Ôm sát từng đường cong tự nhiên từ đầu, vai, lưng, hông đến chân, giải phóng áp lực lên cột sống.\n` +
+        `- **Siêu bền bỉ:** Tuổi thọ từ 15 - 25 năm không biến dạng xẹp lún.\n` +
+        `- **Cấu trúc hàng ngàn lỗ thông hơi:** Giữ đệm luôn thông thoáng 4 mùa, không gây bí lưng.\n\n` +
+        `🏆 **Mẫu bán chạy nhất tại Đệm Xanh:** **${caoSu.name}** (Bảo hành 12 năm chính hãng).\n\n` +
+        `Anh/Chị thích đệm cao su êm ái tự nhiên hay muốn so sánh với đệm bông ép phẳng cứng ạ?`,
+      recommendedProducts: [caoSu],
+    };
+  }
+
+  if (msg.includes('lò xo là gì') || (msg.includes('lò xo') && msg.includes('là gì'))) {
+    return {
+      reply: `Dạ Đệm Xanh xin giải đáp về **Đệm Lò Xo** ạ:\n\n` +
+        `📌 **1. Đệm lò xo là gì?**\n` +
+        `Đệm lò xo có lõi chịu lực từ các con lò xo thép không gỉ. Hiện đại và cao cấp nhất hiện nay là **Đệm Lò Xo Túi Độc Lập** (từng con lò xo bọc kín trong túi vải riêng biệt) thay thế cho lò xo liên kết cũ.\n\n` +
+        `⭐ **2. Ưu điểm vượt trội:**\n` +
+        `- **Cách ly rung động tuyệt đối:** Khi một người trở mình hoặc thức dậy thì người nằm cạnh hoàn toàn không cảm nhận thấy rung lắc hay tiếng kêu cót két.\n` +
+        `- **Chuẩn khách sạn 5 sao:** Độ dày từ 25 - 35cm bồng bềnh, sang trọng, thường kết hợp lớp cao su hoặc memory foam bề mặt.\n\n` +
+        `🏆 **Mẫu tiêu biểu:** **${loXo.name}** (Dunlopillo chuẩn Anh Quốc).\n\n` +
+        `Anh/Chị đang tìm đệm cho phòng cưới hay nâng cấp giường ngủ gia đình ạ?`,
+      recommendedProducts: [loXo],
+    };
+  }
+
   if (msg.includes('đau lưng') || msg.includes('thoát vị') || msg.includes('cột sống') || msg.includes('người già')) {
     return {
       reply: `Dạ em chào Anh/Chị! Với tình trạng đau lưng hoặc thoát vị đĩa đệm, tiêu chí quan trọng nhất là bề mặt đệm phải giữ cột sống ở trạng thái thẳng tự nhiên, tuyệt đối không chọn đệm quá mềm gây võng hông.\n\nĐệm Xanh khuyên Anh/Chị nên tham khảo 2 mẫu tối ưu sau:\n1. **${bongEp?.name}**: Bề mặt phẳng lì nâng đỡ tối đa đốt sống lưng, giá từ ${bongEp?.salePrice?.toLocaleString('vi-VN')}đ.\n2. **${caoSu?.name}**: Đàn hồi tự nhiên ôm sát cơ thể, giải phóng áp lực thắt lưng.\n\nAnh/Chị hiện dự định dùng kích thước giường nào (1m6x2m hay 1m8x2m) ạ?`,
