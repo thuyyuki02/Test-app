@@ -1,0 +1,6 @@
+{
+  "name": "Đệm Xanh AI - Trợ lý Tư vấn Bán hàng",
+  "description": "Chatbot AI tư vấn bán hàng chuyên sâu đệm lò xo, cao su, bông ép, chăn ga gối cho Đệm Xanh (demxanh.com)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
